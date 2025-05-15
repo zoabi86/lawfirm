@@ -90,7 +90,7 @@ export default function Home() {
       <h3 className="text-3xl font-bold text-center mb-8">Get in Touch</h3>
       {submitted ? (
         <div className="text-center text-green-600 text-lg font-medium">
-          Thank you for contacting us! We'll get back to you shortly.
+          Thank you for contacting us! We will get back to you shortly.
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
