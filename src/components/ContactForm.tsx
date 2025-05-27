@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import emailjs from 'emailjs-com';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -11,21 +10,28 @@ export default function ContactForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    emailjs.send(
-      'your_service_id',
-      'your_template_id',
-      formData,
-      'your_user_id'
-    ).then(() => {
-      setSubmitted(true);
-      setFormData({ name: '', email: '', message: '' });
-    }).catch(error => {
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        alert("An error occurred while sending. Please try again.");
+      }
+    } catch (error) {
       alert("An error occurred while sending. Please try again.");
-      console.error("EmailJS error:", error);
-    });
+      console.error("API error:", error);
+    }
   };
 
   return (
@@ -55,4 +61,3 @@ export default function ContactForm() {
     </section>
   );
 }
-
