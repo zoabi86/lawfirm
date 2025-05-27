@@ -7,6 +7,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nodemailer from 'nodemailer';
+import { rateLimit } from '@/lib/rateLimit';
 
 // Basic input sanitization to neutralize HTML/script injection
 const sanitize = (input: string): string =>
@@ -38,6 +39,13 @@ export default async function handler(
 ) {
   if (req.method !== 'POST') {
     return res.status(405).json({ status: 'error', error: 'Method Not Allowed' });
+  }
+
+  const ip = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress || 'unknown';
+
+  // 🛡️  Apply rate limit
+  if (rateLimit(ip)) {
+    return res.status(429).json({ status: 'error', error: 'Too many requests. Please try again later.' });
   }
 
   const { name, email, message } = req.body;
