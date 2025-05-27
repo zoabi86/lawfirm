@@ -14,7 +14,7 @@ export default function ContactForm() {
     e.preventDefault();
 
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('/api/contact-gmail', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
